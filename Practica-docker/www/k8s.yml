@@ -1,0 +1,35 @@
+#manifest
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-www-deployment
+spec:
+  selector:
+    matchLabels:
+      app: demo-www-server
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: demo-www-server
+    spec:
+      containers:
+      - name: demo-www-container
+        #image: gcr.io/tensorflow-serving/resnet 
+        image: docker.io/jlbanda/demo-www:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: demo-www-service
+  name: demo-www-service
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: demo-www-server
+  type: LoadBalancer
